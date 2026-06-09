@@ -123,11 +123,13 @@ def ask_gemini(question: str, context: str, history: list[dict], temperature: fl
 
         client = genai.Client(api_key=GEMINI_API_KEY)
 
-        # Build conversation history for Gemini
+        # Build conversation history for Gemini (safely mapping roles and content keys)
         gemini_history = []
         for turn in history:
+            role = "model" if turn.get("role") in ("model", "assistant", "chef") else "user"
+            text = turn.get("text") or turn.get("content") or ""
             gemini_history.append(
-                types.Content(role=turn["role"], parts=[types.Part(text=turn["text"])])
+                types.Content(role=role, parts=[types.Part(text=text)])
             )
 
         # Current user message with injected context
@@ -145,7 +147,7 @@ Question: {question}"""
             config=types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,
                 temperature=temperature,
-                max_output_tokens=1024,
+                max_output_tokens=2048,
             ),
         )
         return response.text
