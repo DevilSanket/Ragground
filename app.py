@@ -111,8 +111,7 @@ with st.sidebar:
         "How do I elevate my instant noodles using toasted sesame miso?",
         "How should I prepare sweet water prawns before cooking?",
         "Can you share the recipe for the Chocolate Miso Butter?",
-        "How do I make your Miso Devilled Eggs?",
-        "What products does Ground Up sell and where can I buy them?"
+        "How do I make your Miso Devilled Eggs?"
     ]
     
     # Preset click handlers

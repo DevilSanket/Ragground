@@ -30,8 +30,7 @@ SAMPLE_QUESTIONS = [
     ("noodles", "How do I elevate my instant noodles using toasted sesame miso?", "🍜 Elevate Noodles"),
     ("prawns", "How should I prepare sweet water prawns before cooking?", "🍤 Prepare Prawns"),
     ("chocolate", "Can you share the recipe for the Chocolate Miso Butter?", "🍫 Chocolate Miso Butter"),
-    ("devilled", "How do I make your Miso Devilled Eggs?", "🥚 Miso Devilled Eggs"),
-    ("groundup", "What products does Ground Up sell and where can I buy them?", "🛒 About Ground Up")
+    ("devilled", "How do I make your Miso Devilled Eggs?", "🥚 Miso Devilled Eggs")
 ]
 
 @cl.on_chat_start
