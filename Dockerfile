@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the requirements file first to leverage Docker caching
-COPY requirements.txt .
+# Copy the deployment requirements file first to leverage Docker caching
+COPY requirements_deploy.txt ./requirements.txt
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
