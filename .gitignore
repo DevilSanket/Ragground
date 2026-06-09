@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables & secrets
+.env
+*.env
+secrets.json
+cookies.txt
+COOKIE_SETUP.txt
+
+# Downloads and media
+downloads/
+transcripts/
+classification_cache.json
+*.mp4
+*.jpg
+*.crdownload
+*.exe
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db

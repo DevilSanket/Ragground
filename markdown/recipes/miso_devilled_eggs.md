@@ -1,0 +1,72 @@
+---
+reel_id: "DLpjeYfKevE"
+recipe_name: "Miso Devilled Eggs"
+url: "https://www.instagram.com/reel/DLpjeYfKevE/"
+author: "@Ground Up"
+date: "2025-07-03"
+likes: 258
+duration_seconds: 121
+meal_type: "snack"
+difficulty: "easy"
+ground_up_products: [Ground Up White Bean Miso]
+classification_confidence: "high"
+content_type: recipe
+---
+
+# Miso Devilled Eggs
+
+_A flavorful twist on classic devilled eggs, featuring a creamy yolk filling with Ground Up's White Bean Miso, cream cheese, celery, and herbs, topped with fresh scallions, radish, and a drizzle of chili oil._
+
+🕐 Snack  |  📊 Easy
+
+## Source
+
+- **Instagram Reel:** [@Ground Up](https://www.instagram.com/reel/DLpjeYfKevE/)
+- **Date:** 2025-07-03  |  **Likes:** 258
+
+## Ingredients
+
+- Eggs (boiled)
+- Cream cheese
+- White Bean Miso
+- Celery (chopped)
+- Parsley (chopped)
+- Garlic
+- Scallion (finely chopped)
+- Radish (thinly sliced)
+- Chilli oil
+- Pepper (optional)
+- Green chili (optional)
+
+## Ground Up Products Used
+
+- **Ground Up White Bean Miso** — [shop via link in bio](https://www.instagram.com/reel/DLpjeYfKevE/)
+
+## Instructions
+
+1. Boil eggs for 8 minutes.
+2. Separate the egg yolks from the egg whites, saving the egg white halves.
+3. Blend egg yolks with cream cheese and miso in a mixer to a smooth consistency.
+4. Fold chopped celery, parsley, and garlic into the yolk mixture. Adjust seasoning with pepper and green chili as needed.
+5. Fill the egg white halves with the prepared yolk mix.
+6. Top with finely chopped scallion, thinly sliced radish, and finish with chilli oil.
+
+## Original Transcript
+
+Was it the best? I will tell you about it. No comment. I mean, I'm very scared of egg rolls. I have a non eggy palate. I just have boiled them for 8 minutes. I'm just simply removing the egg yolk. Sorry, I damaged that one. So now it will replace it. I'm putting in some cream cheese. White. We know. We saw. I'm gonna add some pepper. And then I'm gonna blend this into the sauce. You can ask the other one. He prefers his other two vitamins. In goes the egg yolk. No salt required here, right? Because of the miso. I want this as cream cheese. Okay. They have cream. Gassi. Some celery. Green chili for the punch. So much. I think you could do it in them. Some coriander flowers. Some more pepper. I think it should be a little bit spicy. It should be a little bit spicy. It should be a little bit spicy. A little bit of this. A little bit of that. Do you like some scallions? A lot. Some color pop. A chili oil. We give you that. There are plates. Yeah. All I'm gonna do is. I'll give you one with more scallions. Because we need something thicker. And chili oil at least. But it's one I think I don't think I can do this. I don't think I can do this. I don't think I can do this. I'm excited. I'm excited. We give you more chili oil. I'm excited.
+
+## Original Caption
+
+Miso Devilled Eggs.
+Just better with our White Bean Miso in the mix, because yes, there will always be miso!
+
+Here's how you can make it:
+
+- Seperate the egg yolks and save the egg white halves.
+- Blend egg yolks with cream cheese and miso in a mixer to a smooth consistency. 
+- Fold chopped celery, parsley and garlic in with the mixture and adjust seasoning as needed. 
+- Fill the egg white halves with the yolk mix and top with finely chopped scallion, thinly sliced radish and finish with chilli oil.
+
+You can place your orders for our Miso, through the online shop (link in bio), or by calling us on +91 93212 91246 to place your orders directly
+
+[Miso, Ground Up, Fermentary, Eggs, Bread Kvaas, Recipe, Quick Recipe, Chef Talks, New Recipe, Snack, Umami, Simple, Savoury, Recipe Reel, Food Reel]

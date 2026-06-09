@@ -1,0 +1,23 @@
+# urls.txt — Add one Instagram Reel URL per line
+# Lines starting with # are ignored (comments)
+# ─────────────────────────────────────────────
+# Examples:
+# https://www.instagram.com/reel/ABC123xyz/
+https://www.instagram.com/reel/DY_sr7kKS0x/
+https://www.instagram.com/reel/DYr9YhrK1IU/
+https://www.instagram.com/reel/DPymeb6Cpgn/
+https://www.instagram.com/p/DRPIjMqCMwi/
+https://www.instagram.com/p/DU-2EP4Cvym/
+https://www.instagram.com/p/DSpnJ-MivZF/
+https://www.instagram.com/reel/DPY0HOIijHK/
+https://www.instagram.com/reel/DO6BMtzihj1/
+https://www.instagram.com/reel/DObDQd5D3VZ/
+https://www.instagram.com/reel/DNGLlj_KCON/
+https://www.instagram.com/reel/DM0Kq2EP_ec/
+https://www.instagram.com/reel/DLpjeYfKevE/
+https://www.instagram.com/reel/DLZ5ecovp03/
+https://www.instagram.com/reel/DKrgYOzP7M6/
+https://www.instagram.com/reel/DKZt5bzzuIr/
+https://www.instagram.com/reel/DFxe4ajvVj2/
+https://www.instagram.com/reel/DConFWMqEaD/
+https://www.instagram.com/p/CQ0VdAppsPj/
