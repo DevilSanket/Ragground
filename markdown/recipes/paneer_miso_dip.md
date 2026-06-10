@@ -1,23 +1,25 @@
 ---
 reel_id: "DKrgYOzP7M6"
-recipe_name: "Paneer Miso Dip"
 url: "https://www.instagram.com/reel/DKrgYOzP7M6/"
 author: "@Ground Up"
 date: "2025-06-09"
 likes: 354
 duration_seconds: 55
+content_type: recipe
+confidence: "high"
+ground_up_products: [White Bean Miso, Miso]
+topics: [dip recipe, snack, miso, paneer, easy cooking]
+recipe_name: "Paneer Miso Dip"
+cuisine_type: "Indian-fusion"
 meal_type: "snack"
 difficulty: "easy"
-ground_up_products: [White Bean Miso]
-classification_confidence: "high"
-content_type: recipe
 ---
 
 # Paneer Miso Dip
 
 _A simple and flavorful dip made with paneer, cream, and white bean miso, perfect for snacking or serving to friends._
 
-🕐 Snack  |  📊 Easy
+🍽️ Indian-fusion  |  🕐 Snack  |  📊 Easy
 
 ## Source
 
@@ -26,27 +28,31 @@ _A simple and flavorful dip made with paneer, cream, and white bean miso, perfec
 
 ## Ingredients
 
-- Paneer
-- Cream
-- White Bean Miso
-- Garlic
-- Coriander
-- Black pepper
-- Salt (to taste)
-- Flat leaf parsley (optional)
+- paneer
+- cream
+- white bean miso
+- olive oil
+- garlic
+- black pepper
+- coriander
+- flat leaf parsley (optional)
 
 ## Ground Up Products Used
 
 - **White Bean Miso** — [shop via link in bio](https://www.instagram.com/reel/DKrgYOzP7M6/)
+- **Miso** — [shop via link in bio](https://www.instagram.com/reel/DKrgYOzP7M6/)
 
 ## Instructions
 
-1. Blend the paneer and cream until smooth.
-2. Grate the garlic and chop the White Bean Miso.
-3. Add the chopped garlic, White Bean Miso, and coriander to the paneer and cream mixture.
-4. Mix all ingredients well together.
-5. Let it sit for a minute.
-6. Taste and season to taste (add salt or black pepper if desired).
+1. Blend paneer and cream until smooth.
+2. Grate garlic and chop white bean miso.
+3. Add chopped garlic, white bean miso, olive oil, black pepper, coriander (and optional flat leaf parsley) to the paneer-cream mixture.
+4. Fold/mix all ingredients well.
+5. Let it sit for a minute, then taste and season to preference.
+
+## Summary
+
+This reel provides a simple recipe for a Paneer Miso Dip, detailing the ingredients and quick steps to prepare it. It highlights how Ground Up's White Bean Miso adds depth to the dish, making it a delicious and easy snack.
 
 ## Original Transcript
 

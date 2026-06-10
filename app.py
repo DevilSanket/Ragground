@@ -101,6 +101,16 @@ with st.sidebar:
     temperature = st.slider("LLM Temperature (Creativity)", min_value=0.0, max_value=1.0, value=0.3, step=0.1)
     
     st.markdown("---")
+    st.subheader("Content Filter")
+    content_type_val = st.selectbox(
+        "Filter by type",
+        options=["all", "recipe", "travel_vlog", "informational", "product_showcase", "other"],
+        index=0,
+        help="Filter responses to a specific content type, or 'all' to search across everything."
+    )
+    content_type_filter = None if content_type_val == "all" else content_type_val
+    
+    st.markdown("---")
     st.subheader("Suggested Questions")
     
     # Preset questions list
@@ -158,7 +168,7 @@ def handle_query(query_text):
     # Process and retrieve
     with st.spinner("Talking to the chef..."):
         # Retrieve chunks
-        chunks = rag_chat.retrieve(collection, query_text, k=top_k)
+        chunks = rag_chat.retrieve(collection, query_text, k=top_k, content_type=content_type_filter)
         context = rag_chat.build_context(chunks)
         
         # Build LLM History
@@ -172,7 +182,7 @@ def handle_query(query_text):
             
         # Call LLM via unified ask_gemini
         try:
-            answer_text = rag_chat.ask_gemini(query_text, context, llm_history, temperature=temperature)
+            answer_text = rag_chat.ask_gemini(query_text, context, llm_history, temperature=temperature, chunks=chunks)
         except Exception as e:
             answer_text = f"Chef's assistant failed to get a response: {e}"
 

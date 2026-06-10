@@ -73,11 +73,15 @@ def health():
 @app.post("/api/chat")
 def chat():
     body = request.get_json(force=True, silent=True) or {}
-    query       = body.get("query", "").strip()
-    collection  = body.get("collection", "recipes")
-    top_k       = int(body.get("top_k", 5))
-    temperature = float(body.get("temperature", 0.3))
-    history     = body.get("history", [])
+    query        = body.get("query", "").strip()
+    collection   = body.get("collection", "recipes")
+    top_k        = int(body.get("top_k", 5))
+    temperature  = float(body.get("temperature", 0.3))
+    history      = body.get("history", [])
+    content_type = body.get("content_type")
+    
+    if content_type == "all":
+        content_type = None
 
     if not query:
         return jsonify({"error": "No query provided"}), 400
@@ -97,7 +101,7 @@ def chat():
             })
 
         # Retrieve relevant chunks
-        chunks = pg.retrieve(collection, query, k=top_k)
+        chunks = pg.retrieve(collection, query, k=top_k, content_type=content_type)
         context = rag.build_context(chunks)
 
         # Build LLM history
@@ -110,8 +114,8 @@ def chat():
             else:
                 llm_history.append({"role": "user", "text": text})
 
-        # Generate answer
-        answer = rag.ask_gemini(query, context, llm_history, temperature=temperature)
+        # Generate answer using content-type-adaptive prompts by passing chunks
+        answer = rag.ask_gemini(query, context, llm_history, temperature=temperature, chunks=chunks)
 
         # Build source dicts (clean for JSON serialisation)
         sources = []
@@ -130,10 +134,25 @@ def chat():
                 "likes":      c.get("likes", ""),
                 "chunk_type": c.get("chunk_type", ""),
                 "author":     c.get("author", ""),
+                "content_type": c.get("content_type", ""),
             })
 
         return jsonify({"answer": answer, "sources": sources})
 
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# ── Content Types ─────────────────────────────────────────────────────────────
+@app.get("/api/content-types")
+def content_types():
+    """Return available content types and their human-readable labels."""
+    try:
+        from config import cfg
+        return jsonify({
+            "content_types": cfg.CONTENT_TYPES,
+            "labels": cfg.CONTENT_TYPE_LABELS
+        })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

@@ -23,13 +23,16 @@ import re
 import sys
 from pathlib import Path
 
-# ─── Paths ────────────────────────────────────────────────────────────────────
-BASE_DIR  = Path(__file__).parent
-MARKDOWN  = BASE_DIR / "markdown"
+# ── Shared config ──────────────────────────────────────────────────────
+from config import cfg
+
+# ── Paths ──────────────────────────────────────────────────────────────
+BASE_DIR  = cfg.BASE_DIR
+MARKDOWN  = cfg.MARKDOWN_DIR
 VECTOR_DB = BASE_DIR / "vectordb"
 
 COLLECTION_NAME  = "instagram_reels"
-EMBEDDING_MODEL  = "all-MiniLM-L6-v2"   # fast, local, 384-dim
+EMBEDDING_MODEL  = cfg.EMBEDDING_MODEL
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -84,13 +87,14 @@ def chunk_markdown(md_path: Path) -> list[dict]:
     reel_id = meta.get("reel_id", md_path.stem)
 
     base_meta = {
-        "reel_id":   reel_id,
-        "author":    meta.get("author", ""),
-        "date":      meta.get("date", ""),
-        "url":       meta.get("url", ""),
-        "likes":     meta.get("likes", ""),
-        "duration":  meta.get("duration_seconds", ""),
-        "source":    str(md_path.name),
+        "reel_id":      reel_id,
+        "author":       meta.get("author", ""),
+        "date":         meta.get("date", ""),
+        "url":          meta.get("url", ""),
+        "likes":        meta.get("likes", ""),
+        "duration":     meta.get("duration_seconds", ""),
+        "source":       str(md_path.name),
+        "content_type": meta.get("content_type", "other"),  # ← new: enables filtered search
     }
 
     chunks = []
@@ -205,7 +209,7 @@ def format_result(rank: int, doc: str, meta: dict, score: float) -> str:
     ts       = meta.get("timestamp", "")
 
     lines = [
-        f"\n{'─'*60}",
+        f"\n{'-'*60}",
         f"  #{rank}  [{ctype.upper()}]  Score: {score:.3f}",
         f"  Author: {author}  |  Date: {meta.get('date','')}",
         f"  URL: {reel_url}",
@@ -234,7 +238,7 @@ def search(collection, query: str, n_results: int = 3, chunk_type: str | None = 
         }
         print(format_result(rank, c["text"], meta, c["score"]))
 
-    print(f"\n{'─'*60}")
+    print(f"\n{'-'*60}")
     return chunks
 
 

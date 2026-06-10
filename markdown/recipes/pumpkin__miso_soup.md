@@ -1,24 +1,25 @@
 ---
 reel_id: "DRPIjMqCMwi"
-recipe_name: "Pumpkin & Miso Soup"
 url: "https://www.instagram.com/p/DRPIjMqCMwi/"
 author: "@Unknown"
 date: "2026-06-08"
 likes: N/A
 duration_seconds: 0
-meal_type: "lunch/dinner"
-difficulty: "easy"
-estimated_time: "approx. 30-40 minutes"
-ground_up_products: [confit garlic miso, Savoury Granola, Chilli oil]
-classification_confidence: "high"
 content_type: recipe
+confidence: "high"
+ground_up_products: [confit garlic miso, Chilli oil, Savoury Granola]
+topics: [soup, pumpkin, miso, cooking, healthy eating]
+recipe_name: "Pumpkin & Miso Soup"
+meal_type: "lunch"
+difficulty: "easy"
+estimated_time: "30-40 minutes"
 ---
 
 # Pumpkin & Miso Soup
 
-_A comforting and flavorful soup featuring charred pumpkin, aromatic garlic, chillies, and herbs, blended with Ground Up's confit garlic miso for a rich, umami finish._
+_A comforting and flavorful soup featuring charred pumpkin, aromatic herbs, and Ground Up's confit garlic miso, perfect for a healthy meal._
 
-🕐 Lunch/dinner  |  📊 Easy  |  ⏱️ approx. 30-40 minutes
+🕐 Lunch  |  📊 Easy  |  ⏱️ 30-40 minutes
 
 ## Source
 
@@ -27,26 +28,26 @@ _A comforting and flavorful soup featuring charred pumpkin, aromatic garlic, chi
 
 ## Ingredients
 
-- Pumpkin (about 250 gms, unpeeled)
-- Olive oil (for charring)
+- pumpkin (about 250 gms)
+- olive oil
 - 5-6 crushed garlic pods
 - 2 chillies
-- Handful of herbs (rosemary, marjoram, sage)
-- EVOO (Extra Virgin Olive Oil - for frying)
-- Vegetable stock or water + stock cube (enough to cover pumpkin)
-- Pinch of mushroom granules (optional, from urban platter)
-- 1-2 big spoonfuls of Ground Up confit garlic miso
-- Sour cream or feta chunks (for serving, optional)
-- Toasted seeds or nuts (for serving, optional)
-- Ground Up Savoury Granola (for topping, optional)
-- EVOO fried sourdough bread (for dipping, optional)
-- Ground Up Chilli oil (for extra heat, optional)
+- handful of herbs (rosemary, marjoram, sage)
+- EVOO
+- veg stock or water + stock cube
+- pinch of mushroom granules (optional)
+- big spoonful or two of confit garlic miso from @groundup.in
+- sour cream/ chunks of feta (for serving)
+- toasted seeds/ nuts (for serving)
+- Savoury Granola (for serving)
+- sourdough bread (for dipping)
+- Chilli oil from @groundup.in (optional)
 
 ## Ground Up Products Used
 
 - **confit garlic miso** — [shop via link in bio](https://www.instagram.com/p/DRPIjMqCMwi/)
-- **Savoury Granola** — [shop via link in bio](https://www.instagram.com/p/DRPIjMqCMwi/)
 - **Chilli oil** — [shop via link in bio](https://www.instagram.com/p/DRPIjMqCMwi/)
+- **Savoury Granola** — [shop via link in bio](https://www.instagram.com/p/DRPIjMqCMwi/)
 
 ## Instructions
 
@@ -57,7 +58,11 @@ _A comforting and flavorful soup featuring charred pumpkin, aromatic garlic, chi
 5. Blend the soup along with a big spoonful or two of confit garlic miso from @groundup.in.
 6. Adjust consistency & seasoning right in the end.
 7. Serve with a dollop of sour cream/ chunks of feta, toasted seeds/ nuts (we have a lovely Savoury Granola that's perfect for topping this) & EVOO fried sourdough bread for dipping.
-8. P.S: Add a drizzle or two of @groundup.in Chilli oil for extra heat (optional).
+8. P.S: Add a drizzle or two of @groundup.in Chilli oil for extra heat.
+
+## Summary
+
+This reel provides a detailed recipe for making Pumpkin & Miso Soup. It includes step-by-step cooking instructions, a list of ingredients, and serving suggestions, featuring Ground Up's confit garlic miso and chilli oil.
 
 ## Original Caption
 

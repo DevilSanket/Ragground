@@ -1,23 +1,24 @@
 ---
 reel_id: "DPY0HOIijHK"
-recipe_name: "Miso Grilled Cheese"
 url: "https://www.instagram.com/reel/DPY0HOIijHK/"
 author: "@Ground Up"
 date: "2025-10-04"
 likes: 244
 duration_seconds: 88
-meal_type: "lunch, dinner, snack"
-difficulty: "easy"
-ground_up_products: [Ground Up Classic Soybean Miso]
-classification_confidence: "high"
 content_type: recipe
+confidence: "high"
+ground_up_products: [classic soybean miso]
+topics: [miso, grilled cheese, sandwich, umami, easy meal, cooking]
+recipe_name: "Miso Grilled Cheese"
+meal_type: "lunch | dinner"
+difficulty: "easy"
 ---
 
 # Miso Grilled Cheese
 
-_A gourmet grilled cheese featuring sweet caramelized onions, melted cheese, and the deep umami of miso._
+_A simple grilled cheese sandwich transformed into a gourmet experience with the addition of caramelized onions and Ground Up's classic soybean miso for a rich, savory umami flavor._
 
-🕐 Lunch, dinner, snack  |  📊 Easy
+🕐 Lunch | dinner  |  📊 Easy
 
 ## Source
 
@@ -26,26 +27,30 @@ _A gourmet grilled cheese featuring sweet caramelized onions, melted cheese, and
 
 ## Ingredients
 
-- Thinly sliced white onion
-- Miso (classic soybean miso recommended)
-- Grated mozzarella cheese
-- Grated cheddar cheese
-- Sandwich bread (sourdough recommended)
-- Oil (for sautéing/grilling)
-- Honey (for drizzle)
+- thinly sliced white onion
+- classic soybean miso
+- grated mozzarella cheese
+- grated cheddar cheese
+- sandwich bread (sourdough recommended)
+- oil
+- honey
 
 ## Ground Up Products Used
 
-- **Ground Up Classic Soybean Miso** — [shop via link in bio](https://www.instagram.com/reel/DPY0HOIijHK/)
+- **classic soybean miso** — [shop via link in bio](https://www.instagram.com/reel/DPY0HOIijHK/)
 
 ## Instructions
 
 1. Mix sliced onions with miso.
-2. Sauté the onion-miso mixture in a pan until soft and caramelized.
+2. Sauté the onion-miso mixture in a pan until softened and caramelized.
 3. Once cooled, fold the caramelized onion mixture with grated mozzarella and cheddar cheese.
-4. Spread the mixture generously between two slices of bread.
-5. Grill the sandwich until golden and crisp.
+4. Spread the cheese and onion mixture generously onto one slice of bread, then top with another slice.
+5. Grill the sandwich until golden and crisp, and the cheese is melted.
 6. Finish with a drizzle of honey.
+
+## Summary
+
+This reel provides a step-by-step guide to making a gourmet miso grilled cheese sandwich. It highlights how Ground Up's classic soybean miso elevates the dish with umami, complementing sweet caramelized onions and melted cheese.
 
 ## Original Transcript
 

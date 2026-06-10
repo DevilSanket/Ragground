@@ -22,40 +22,53 @@ sys.path.append(str(BASE_DIR))
 import rag_chat
 import postgres_db
 
-# Sample questions configuration
+# Sample questions — span all content types
 SAMPLE_QUESTIONS = [
-    ("pumpkin", "Chef, how do I make your pumpkin and miso soup?", "🎃 Pumpkin Soup"),
-    ("scrambled", "How do I make the Scrambled Eggs with Miso Butter?", "🍳 Miso Butter Eggs"),
-    ("paneer", "Chef, what is the recipe for the Paneer Miso Dip?", "🧀 Paneer Miso Dip"),
-    ("noodles", "How do I elevate my instant noodles using toasted sesame miso?", "🍜 Elevate Noodles"),
-    ("prawns", "How should I prepare sweet water prawns before cooking?", "🍤 Prepare Prawns"),
-    ("chocolate", "Can you share the recipe for the Chocolate Miso Butter?", "🍫 Chocolate Miso Butter"),
-    ("devilled", "How do I make your Miso Devilled Eggs?", "🥚 Miso Devilled Eggs")
+    # Recipes
+    ("pumpkin",    "Chef, how do I make your pumpkin and miso soup?",             "🎃 Pumpkin Miso Soup"),
+    ("scrambled",  "How do I make the Scrambled Eggs with Miso Butter?",           "🍳 Miso Butter Eggs"),
+    ("paneer",     "What is the recipe for your Paneer Miso Dip?",                 "🧀 Paneer Miso Dip"),
+    ("noodles",    "How do I elevate instant noodles with toasted sesame miso?",   "🍜 Elevated Noodles"),
+    # Travel
+    ("travel",     "Tell me about any food markets or places you've explored.",    "🌍 Food Markets"),
+    # Informational
+    ("miso",       "What is miso and how do you ferment it at Ground Up?",         "📚 What is Miso?"),
+    ("ferment",    "Why do you believe in fermented foods? What are the benefits?", "🧪 Fermentation"),
+    # Product showcase
+    ("product",    "Tell me about your latest Ground Up products.",                "🛍️ New Products"),
 ]
 
 @cl.on_chat_start
 async def start():
     # Set default session values
-    cl.user_session.set("collection_name", "recipes")
-    cl.user_session.set("top_k", 5)
-    cl.user_session.set("temperature", 0.3)
-    cl.user_session.set("chat_history", [])
+    cl.user_session.set("collection_name", "instagram_reels")
+    cl.user_session.set("content_type",    None)   # None = all types
+    cl.user_session.set("top_k",           5)
+    cl.user_session.set("temperature",     0.3)
+    cl.user_session.set("chat_history",    [])
 
     # Send settings panel configurations
     await cl.ChatSettings([
         Select(
-            id="collection_name",
-            label="Query Collection",
-            values=["recipes", "instagram_reels"],
+            id="content_type",
+            label="Content Filter",
+            values=["all", "recipe", "travel_vlog", "informational", "product_showcase", "other"],
             initial_index=0,
-            description="'recipes' has recipe details. 'instagram_reels' contains Reels transcriptions."
+            description="Filter responses to a specific content type, or 'all' to search across everything."
+        ),
+        Select(
+            id="collection_name",
+            label="Vector DB Collection",
+            values=["instagram_reels"],
+            initial_index=0,
+            description="The vector database collection to search."
         ),
         Slider(
             id="top_k",
-            label="PostgreSQL Retrievals (Top K)",
+            label="Retrievals (Top K)",
             initial=5,
             min=2,
-            max=8,
+            max=10,
             step=1
         ),
         Slider(
@@ -70,10 +83,10 @@ async def start():
 
     # Pre-verify collection loading
     try:
-        rag_chat.load_collection(collection_name="recipes")
+        rag_chat.load_collection(collection_name="instagram_reels")
     except SystemExit:
         await cl.ErrorMessage(
-            content="PostgreSQL initialization failed. Run `python classify_reels.py` in your terminal to ingest data."
+            content="⚠️ Vector DB not initialised. Run `python classify_reels.py` to ingest data."
         ).send()
         return
 
@@ -84,10 +97,11 @@ async def start():
     ]
     
     welcome_content = (
-        "🍳 **Welcome to Ground Up — Talk to the Chef!**\n\n"
-        "I'm the head chef and founder of Ground Up. Ask me anything about our recipes, "
-        "ingredients, or cooking tips! Use the settings panel on the bottom-left to adjust parameters.\n\n"
-        "Select one of these questions to get started:"
+        "🍳 **Welcome to Ground Up — Talk to the Founder!**\n\n"
+        "I'm the founder of Ground Up — ask me anything about our **recipes**, "
+        "**travel stories**, **ingredient knowledge**, or **products**!\n\n"
+        "Use the ⚙️ settings panel to filter by content type or adjust parameters.\n\n"
+        "Try one of these questions to get started:"
     )
     
     await cl.Message(content=welcome_content, actions=actions).send()
@@ -95,10 +109,12 @@ async def start():
 
 @cl.on_settings_update
 async def setup_agent(settings):
+    ct_raw = settings.get("content_type", "all")
+    cl.user_session.set("content_type",    None if ct_raw == "all" else ct_raw)
     cl.user_session.set("collection_name", settings["collection_name"])
-    cl.user_session.set("top_k", int(settings["top_k"]))
-    cl.user_session.set("temperature", float(settings["temperature"]))
-    
+    cl.user_session.set("top_k",           int(settings["top_k"]))
+    cl.user_session.set("temperature",     float(settings["temperature"]))
+
     # Attempt loading collection
     try:
         rag_chat.load_collection(collection_name=settings["collection_name"])
@@ -121,9 +137,10 @@ async def main(message: cl.Message):
 
 
 async def handle_query(query_text: str):
-    collection_name = cl.user_session.get("collection_name") or "recipes"
-    top_k = cl.user_session.get("top_k") or 5
-    temperature = cl.user_session.get("temperature") or 0.3
+    collection_name = cl.user_session.get("collection_name") or "instagram_reels"
+    content_type    = cl.user_session.get("content_type")     # None = all types
+    top_k           = cl.user_session.get("top_k") or 5
+    temperature     = cl.user_session.get("temperature") or 0.3
     
     if not os.environ.get("GEMINI_API_KEY"):
         await cl.ErrorMessage(content="❌ GEMINI_API_KEY is not configured in your .env file.").send()
@@ -142,7 +159,7 @@ async def handle_query(query_text: str):
             return
             
         # Retrieve chunks
-        chunks = rag_chat.retrieve(collection, query_text, k=top_k)
+        chunks = rag_chat.retrieve(collection, query_text, k=top_k, content_type=content_type)
         context = rag_chat.build_context(chunks)
         
         # Build LLM History (map assistant -> model for Gemini SDK compatibility)
@@ -155,9 +172,10 @@ async def handle_query(query_text: str):
                 "text": turn["content"]
             })
             
-        # Call LLM via unified ask_gemini
+        # Call LLM via unified ask_gemini (chunks enable adaptive system prompt)
         try:
-            answer_text = rag_chat.ask_gemini(query_text, context, llm_history, temperature=temperature)
+            answer_text = rag_chat.ask_gemini(query_text, context, llm_history,
+                                              temperature=temperature, chunks=chunks)
         except Exception as e:
             answer_text = f"Chef's assistant failed to get a response: {e}"
             
@@ -179,6 +197,7 @@ async def handle_query(query_text: str):
                 seen_reels.add(r_id)
                 unique_sources.append(c)
 
+        sources_list = []
         for idx, source in enumerate(unique_sources):
             r_id = source["reel_id"]
             mp4_path = BASE_DIR / "downloads" / f"{r_id}.mp4"
@@ -190,19 +209,26 @@ async def handle_query(query_text: str):
             elif jpg_path.exists():
                 elements.append(cl.Image(name=f"Thumbnail: {r_id}", path=str(jpg_path), display="inline"))
                 
-            # Formatting source metadata text block for the sidebar drawer
-            recipe_name = source.get("recipe_name")
-            recipe_line = f"🍳 **Recipe:** {recipe_name}\n" if recipe_name else ""
-            
-            source_desc = (
-                f"{recipe_line}"
-                f"📅 **Date:** {source.get('date', 'Unknown')}\n"
-                f"❤️ **Likes:** {source.get('likes', 'N/A')}\n"
-                f"📈 **Relevance Score:** {source['score']:.3f}\n"
-                f"🔗 [Instagram Link]({source['url']})\n\n"
-                f"**Context Chunk:**\n{source['text']}"
+            # Build clean metadata representation for the inline text footer
+            title = (
+                source.get("recipe_name") or 
+                source.get("location") or 
+                source.get("subject") or 
+                source.get("product_name") or 
+                f"Reel {r_id}"
             )
-            elements.append(cl.Text(name=f"Source {idx+1}: {r_id}", content=source_desc, display="side"))
+            url = source.get("url", "")
+            score = source.get("score", 0.0)
+            date_str = f" ({source['date']})" if source.get("date") else ""
+            
+            if url:
+                sources_list.append(f"- [{title}]({url}){date_str} (Score: {score:.3f})")
+            else:
+                sources_list.append(f"- {title}{date_str} (Score: {score:.3f})")
+
+        if sources_list:
+            sources_md = "\n\n---\n**Sources:**\n" + "\n".join(sources_list)
+            answer_text += sources_md
 
     # Send final answer with attachments
     await cl.Message(content=answer_text, elements=elements).send()

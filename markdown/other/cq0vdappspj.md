@@ -1,0 +1,29 @@
+---
+reel_id: "CQ0VdAppsPj"
+url: "https://www.instagram.com/p/CQ0VdAppsPj/"
+author: "@Unknown"
+date: "2026-06-08"
+likes: N/A
+duration_seconds: 0
+content_type: other
+confidence: ""
+---
+
+# Reel — CQ0VdAppsPj
+
+## Source
+
+- **Instagram Reel:** [@Unknown](https://www.instagram.com/p/CQ0VdAppsPj/)
+- **Date:** 2026-06-08  |  **Likes:** N/A
+
+## Original Caption
+
+Our Chicken Pho with Handmade Rice Noodles has what we call a Double Broth - the classic pho broth of charred spices, ginger and aromatic herbs is combined with a broth of chicken bones cured with Shio Koji & cooked over two days to create a concentrated umami base.
+
+The noodles for the Pho are made using two native varieties of rice - Ajara Ghansal and Raibhog, which are soaked, ground into a fine paste and steamed to make fresh noodles for you. 
+
+Finally, what makes the Pho is an abundance of fresh herbs that we are lucky to have access to, like Sawtooth Coriander (native to North-Eastern parts of India, grown locally by @offerinfsfarms).
+
+This comforting bowl of goodness is on the menu till the weather demands. To order click link in bio.
+
+#madefromscratch #groundup #grounduppune #ingredientsmatter #koji #shiokoji #fermentation #umami

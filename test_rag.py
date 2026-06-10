@@ -7,17 +7,10 @@ from pathlib import Path
 
 BASE = Path(__file__).parent
 
-# Load .env
-_env = BASE / ".env"
-if _env.exists():
-    for line in _env.read_text().splitlines():
-        line = line.strip()
-        if line and not line.startswith("#") and "=" in line:
-            k, _, v = line.partition("=")
-            os.environ.setdefault(k.strip(), v.strip())
+from config import cfg
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-if not GEMINI_API_KEY or GEMINI_API_KEY == "your-gemini-api-key-here":
+GEMINI_API_KEY = cfg.GEMINI_API_KEY
+if not GEMINI_API_KEY:
     print("ERROR: GEMINI_API_KEY not set in .env")
     sys.exit(1)
 
@@ -49,7 +42,7 @@ def ask(question: str) -> str:
 
     # Generate
     resp = gemini.models.generate_content(
-        model="gemini-2.5-flash",
+        model=cfg.GEMINI_MODEL,
         contents=[types.Content(role="user", parts=[types.Part(
             text=f"Context:\n{context}\n\nQuestion: {question}"
         )])],
@@ -71,7 +64,7 @@ questions = [
 for i, q in enumerate(questions, 1):
     print(f"{'='*60}")
     print(f"Q{i}: {q}")
-    print(f"{'─'*60}")
+    print(f"{'-'*60}")
     answer = ask(q)
     print(f"A: {answer}")
     print()

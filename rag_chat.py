@@ -21,26 +21,20 @@ import sys
 import argparse
 from pathlib import Path
 
-# ─── Paths ────────────────────────────────────────────────────────────────────
-BASE_DIR  = Path(__file__).parent
+# ── Shared config ────────────────────────────────────────────────────
+from config import cfg
+
+# ── Paths ─────────────────────────────────────────────────────────────
+BASE_DIR  = cfg.BASE_DIR
 VECTOR_DB = BASE_DIR / "vectordb"
 
 os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
 
-# ─── Load .env if present ─────────────────────────────────────────────────────
-_env_file = BASE_DIR / ".env"
-if _env_file.exists():
-    for line in _env_file.read_text().splitlines():
-        line = line.strip()
-        if line and not line.startswith("#") and "=" in line:
-            k, _, v = line.partition("=")
-            os.environ.setdefault(k.strip(), v.strip())
-
-GEMINI_API_KEY  = os.environ.get("GEMINI_API_KEY", "")
-GEMINI_MODEL    = "gemini-3.5-flash"
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+GEMINI_API_KEY  = cfg.GEMINI_API_KEY
+GEMINI_MODEL    = cfg.GEMINI_MODEL
+EMBEDDING_MODEL = cfg.EMBEDDING_MODEL
 COLLECTION_NAME = "instagram_reels"   # default; override with --collection
-CONFIG = {"top_k": 5}  # mutable config — avoids global reassignment issues
+CONFIG = {"top_k": cfg.RAG_TOP_K}    # mutable config — avoids global reassignment issues
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -68,19 +62,20 @@ def load_collection(collection_name: str = COLLECTION_NAME):
     return collection_name
 
 
-def retrieve(collection, query: str, k: int = 5) -> list[dict]:
-    """Retrieve top-k relevant chunks from PostgreSQL."""
+def retrieve(collection, query: str, k: int = 5, content_type: str | None = None) -> list[dict]:
+    """Retrieve top-k relevant chunks. Optionally filter by content_type."""
     import postgres_db
-    return postgres_db.retrieve(collection, query, k=k)
+    return postgres_db.retrieve(collection, query, k=k, content_type=content_type)
 
 
 def build_context(chunks: list[dict]) -> str:
     """Format retrieved chunks into a context string for the LLM."""
     parts = []
     for i, c in enumerate(chunks, 1):
-        ts_info = f" [{c['timestamp']}]" if c["timestamp"] else ""
-        recipe_info = f" | Recipe: {c['recipe_name']}" if c.get("recipe_name") else ""
-        header  = f"[Source {i}: {c['author']}{recipe_info} | {c['chunk_type']}{ts_info} | score={c['score']}]"
+        ts_info      = f" [{c['timestamp']}]" if c.get("timestamp") else ""
+        recipe_info  = f" | Recipe: {c['recipe_name']}" if c.get("recipe_name") else ""
+        ct_info      = f" | Type: {c.get('content_type', 'unknown')}"
+        header       = f"[Source {i}: {c['author']}{recipe_info}{ct_info} | {c['chunk_type']}{ts_info} | score={c['score']}]"
         parts.append(f"{header}\n{c['text']}")
     return "\n\n---\n\n".join(parts)
 
@@ -89,33 +84,67 @@ def build_context(chunks: list[dict]) -> str:
 # GENERATION  (Gemini)
 # ══════════════════════════════════════════════════════════════════════════════
 
-SYSTEM_PROMPT = """You are the head chef and founder of Ground Up (groundup.in), an artisan Indian food brand.
-You speak DIRECTLY as the chef — warm, passionate, opinionated about food, and deeply knowledgeable.
+# Multi-type system prompts — the persona adapts based on what type of content was retrieved
+SYSTEM_PROMPTS = {
+    "default": """You are the founder and head chef of Ground Up (groundup.in), an artisan Indian food brand.
+You created miso pastes, fermented products, fresh tofu, and healthy ingredients.
+You speak DIRECTLY as the founder — warm, passionate, opinionated, deeply knowledgeable.
 
 Persona:
 - You speak in first person: "I make this...", "In my kitchen...", "The way I like to do it..."
 - You are enthusiastic and love sharing cooking tips and stories behind your dishes
 - You use casual, conversational language with occasional food nerd excitement
-- You always reference Ground Up products (Seaweed Miso, fresh tofu, etc.) naturally as YOUR products
-- You are honest — if you haven't made something or don't have a recipe for it, say so
+- You always reference Ground Up products naturally as YOUR products
+- You are honest — if you haven't covered something, say so
 
 Rules:
 - Answer ONLY based on the context provided from your Instagram Reels
-- Give step-by-step instructions when a recipe is asked for
-- If asked about an ingredient, explain why YOU love using it
-- If context doesn't cover the question, say "I haven't shared that one yet, but stay tuned!"
-- Never break character — you ARE the chef
-- Keep it conversational and engaging, like you're cooking together
-"""
+- For recipes: give step-by-step instructions when asked
+- For travel: share what you saw, ate, and experienced
+- For educational content: explain the concept clearly in your own voice
+- If context doesn't cover the question, say "I haven't shared that one yet — but stay tuned!"
+- Never break character — you ARE the founder
+- Keep it conversational and engaging""",
+
+    "recipe": """You are the head chef and founder of Ground Up. Answer recipe questions step-by-step.
+Speak in first person. Reference your products (miso, tofu, etc.) naturally.
+If a recipe isn't in your context, say you haven't shared it yet.""",
+
+    "travel_vlog": """You are the founder of Ground Up sharing your travel and food exploration stories.
+Speak warmly about places you've visited, food you've eaten, and markets you've explored.
+Bring the location to life. If something isn't in your context, say you haven't covered it yet.""",
+
+    "informational": """You are the founder of Ground Up — an expert on fermentation, artisan food, and healthy eating.
+Share knowledge passionately and clearly. Explain the science and story behind ingredients.
+Reference your products when relevant. If something isn't in your context, say you haven't covered it yet.""",
+
+    "product_showcase": """You are the founder of Ground Up showcasing your products.
+Share what makes each product special, how to use it, and what makes it different.
+Be enthusiastic but not salesy. If a product isn't in your context, say it hasn't been featured yet.""",
+}
 
 
-def ask_gemini(question: str, context: str, history: list[dict], temperature: float = 0.3) -> str:
+def _pick_system_prompt(chunks: list[dict]) -> str:
+    """Pick the best system prompt based on the content types in retrieved chunks."""
+    if not chunks:
+        return SYSTEM_PROMPTS["default"]
+    # Vote on content type
+    from collections import Counter
+    types = [c.get("content_type", "other") for c in chunks]
+    most_common = Counter(types).most_common(1)[0][0]
+    return SYSTEM_PROMPTS.get(most_common, SYSTEM_PROMPTS["default"])
+
+
+def ask_gemini(question: str, context: str, history: list[dict],
+               temperature: float = 0.3, chunks: list[dict] | None = None) -> str:
     """Send question + context to Gemini and return the answer."""
     if not GEMINI_API_KEY:
         return (
             "ERROR: GEMINI_API_KEY is not configured in .env.\n"
             "  Please set GEMINI_API_KEY to run the bot."
         )
+
+    system_prompt = _pick_system_prompt(chunks or [])
 
     try:
         from google import genai
@@ -145,7 +174,7 @@ Question: {question}"""
                 types.Content(role="user", parts=[types.Part(text=user_msg)])
             ],
             config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
+                system_instruction=system_prompt,
                 temperature=temperature,
                 max_output_tokens=2048,
             ),
@@ -154,6 +183,7 @@ Question: {question}"""
 
     except Exception as e:
         return f"Gemini error: {e}"
+
 
 
 def safe_print(text: str, *args, **kwargs):
@@ -203,12 +233,13 @@ def chat(collection, single_query: str | None = None):
         print(f"\nThinking...", end="", flush=True)
 
         # Retrieve
-        chunks = retrieve(collection, question, k=CONFIG["top_k"])
+        content_type_filter = CONFIG.get("content_type")
+        chunks = retrieve(collection, question, k=CONFIG["top_k"], content_type=content_type_filter)
         last_chunks = chunks
         context = build_context(chunks)
 
-        # Generate
-        answer = ask_gemini(question, context, history)
+        # Generate (pass chunks so the system prompt adapts to content type)
+        answer = ask_gemini(question, context, history, chunks=chunks)
 
         # Update history (keep last 6 turns to avoid token overflow)
         history.append({"role": "user",  "text": question})
@@ -254,17 +285,21 @@ def chat(collection, single_query: str | None = None):
 
 def main():
     parser = argparse.ArgumentParser(description="Ground Up Reels RAG Chatbot (Gemini)")
-    parser.add_argument("--query", "-q", help="Single query (non-interactive)")
-    parser.add_argument("--top-k", type=int, default=CONFIG["top_k"],
+    parser.add_argument("--query",        "-q", help="Single query (non-interactive)")
+    parser.add_argument("--top-k",        type=int, default=CONFIG["top_k"],
                         help=f"Chunks to retrieve (default {CONFIG['top_k']})")
-    parser.add_argument("--collection", "-c", default=COLLECTION_NAME,
-                        choices=["instagram_reels", "recipes"],
-                        help="PostgreSQL collection to query (default: instagram_reels)")
+    parser.add_argument("--collection",   "-c", default=COLLECTION_NAME,
+                        help="Vector DB collection to query (default: instagram_reels)")
+    parser.add_argument("--content-type", "-t", default=None,
+                        choices=cfg.CONTENT_TYPES,
+                        help="Filter results to a specific content type (recipe, travel_vlog, etc.)")
     args = parser.parse_args()
 
-    CONFIG["top_k"] = args.top_k
+    CONFIG["top_k"]        = args.top_k
+    CONFIG["content_type"] = args.content_type
 
-    print(f"Loading vector DB [{args.collection}] and embedding model...")
+    ct_label = f" [{args.content_type}]" if args.content_type else " [all types]"
+    print(f"Loading vector DB [{args.collection}]{ct_label} and embedding model...")
     collection = load_collection(collection_name=args.collection)
     chat(collection, single_query=args.query)
 

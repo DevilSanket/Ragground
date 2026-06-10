@@ -2,20 +2,19 @@
 """
 run_pipeline.py
 ───────────────
-One-command pipeline: Fetch → Download → Transcribe → Classify → Ingest → Chat
+One-command pipeline: Fetch → Download → Transcribe → Classify → Chat
 
 Stages:
-  1. fetch      — auto-discover all reel URLs from an Instagram profile
+  1. fetch      — auto-discover all reel URLs from an Instagram profile (instaloader)
   2. download   — yt-dlp downloads from urls.txt
   3. transcribe — faster-whisper → markdown files
-  4. classify   — Gemini separates recipe vs non-recipe content
-  5. ingest     — PostgreSQL vector DB ingestion (all reels)
-  6. chat       — Gemini RAG chatbot
+  4. classify   — Gemini classifies into recipe|travel_vlog|informational|product_showcase|other
+  5. chat       — Gemini RAG chatbot (all content types)
 
 Usage:
     python run_pipeline.py                                    # full pipeline
     python run_pipeline.py --stages fetch,download            # fetch + download only
-    python run_pipeline.py --stages classify,ingest,chat      # from classify onwards
+    python run_pipeline.py --stages classify,chat             # from classify onwards
     python run_pipeline.py --profile groundup.in --limit 20  # limit to 20 reels
     python run_pipeline.py --model small                      # better transcription
     python run_pipeline.py --reset-db                         # wipe & re-ingest
@@ -111,6 +110,8 @@ def main():
     )
     parser.add_argument("--profile", "-p", default="groundup.in",
                         help="Instagram profile to fetch reels from (default: groundup.in)")
+    parser.add_argument("--ig-user",  default=None,
+                        help="Instagram username for instaloader session auth (set IG_USERNAME in .env)")
     parser.add_argument("--limit", "-n", type=int, default=None,
                         help="Max reels to fetch from profile")
     parser.add_argument("--skip-chat",  action="store_true", help="Skip the chat stage")
@@ -143,16 +144,15 @@ def main():
 
     all_ok = True
 
-    # ── STAGE 0: Fetch profile URLs ───────────────────────────────────────────
+    # ── STAGE 0: Fetch profile URLs (uses instaloader) ──────────────────────────
     if "fetch" in stages:
-        fetch_cmd = [sys.executable, "fetch_profile.py", "--profile", args.profile, "--append"]
-        if (BASE_DIR / args.cookies_file).exists():
-            fetch_cmd += ["--cookies-file", args.cookies_file]
-        else:
-            warn("cookies.txt not found — fetch may fail")
+        fetch_cmd = [sys.executable, "fetch_profile_v2.py",
+                     "--profile", args.profile, "--append"]
+        if args.ig_user:
+            fetch_cmd += ["--ig-user", args.ig_user]
         if args.limit:
             fetch_cmd += ["--limit", str(args.limit)]
-        ok = run_stage(f"Fetch Profile @{args.profile}", fetch_cmd, BASE_DIR)
+        ok = run_stage(f"Fetch Profile @{args.profile} (instaloader)", fetch_cmd, BASE_DIR)
         all_ok = all_ok and ok
 
     # ── STAGE 1: Download ─────────────────────────────────────────────────────
@@ -189,7 +189,7 @@ def main():
         warn("Raw reels ingestion stage is disabled to focus only on recipe embeddings.")
         print("  Recipes will be ingested during the 'classify' stage.")
 
-    # ── STAGE 4: Classify (recipe vs non-recipe) ──────────────────────────────
+    # ── STAGE 3: Classify (multi-type: recipe, travel, informational, etc.) ─────────
     if "classify" in stages and all_ok:
         mds = check_markdowns()
         if not mds:
@@ -198,7 +198,8 @@ def main():
             classify_cmd = [sys.executable, "classify_reels.py"]
             if args.reset_db:
                 classify_cmd.append("--reset")
-            ok = run_stage("Classify Reels (Recipe Detection)", classify_cmd, BASE_DIR)
+            ok = run_stage("Classify Reels (recipe | travel_vlog | informational | product_showcase | other)",
+                           classify_cmd, BASE_DIR)
             all_ok = all_ok and ok
 
     # ── STAGE 5: Chat ─────────────────────────────────────────────────────────

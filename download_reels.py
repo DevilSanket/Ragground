@@ -64,7 +64,7 @@ def download(urls: list[str], cookies_browser: str | None = None, cookies_file: 
         print("❌ No URLs provided. Add URLs to urls.txt or pass --url <URL>")
         sys.exit(1)
 
-    print(f"\n📥 Downloading {len(urls)} reel(s)...\n{'─'*50}")
+    print(f"\n📥 Downloading {len(urls)} reel(s)...\n{'-'*50}")
 
     cmd = build_command(urls, cookies_browser, cookies_file)
     print(f"▶  Running: {' '.join(cmd[:4])} ... [{len(urls)} URL(s)]\n")

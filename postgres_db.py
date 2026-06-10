@@ -285,48 +285,60 @@ def list_collections() -> list[str]:
     conn.close()
     return collections
 
-def retrieve(collection_name: str, query: str, k: int = 5, chunk_type: str | None = None) -> list[dict]:
-    """Retrieves top-K relevant chunks using cosine similarity."""
+def retrieve(collection_name: str, query: str, k: int = 5,
+             chunk_type: str | None = None,
+             content_type: str | None = None) -> list[dict]:
+    """Retrieves top-K relevant chunks using cosine similarity.
+
+    Args:
+        chunk_type:   Filter by chunk role: 'overview', 'transcript', 'caption'
+        content_type: Filter by content category: 'recipe', 'travel_vlog', etc.
+    """
     query_emb = get_embeddings([query])[0]
 
     if DB_TYPE == "sqlite":
         conn = get_sqlite_connection()
         cur = conn.cursor()
-        
+
         query_sql = """
             SELECT id, document, metadata, cosine_similarity(embedding, ?) AS score
             FROM reels_embeddings
             WHERE collection = ?
         """
         params = [json.dumps(query_emb), collection_name]
-        
+
         if chunk_type:
             query_sql += " AND json_extract(metadata, '$.chunk_type') = ?"
             params.append(chunk_type)
-            
+
+        if content_type:
+            query_sql += " AND json_extract(metadata, '$.content_type') = ?"
+            params.append(content_type)
+
         query_sql += """
             ORDER BY score DESC
             LIMIT ?;
         """
         params.append(k)
-        
+
         cur.execute(query_sql, params)
         results = cur.fetchall()
         conn.close()
-        
+
         chunks = []
         for r in results:
             meta = json.loads(r["metadata"]) if isinstance(r["metadata"], str) else r["metadata"]
             chunks.append({
-                "text":       r["document"],
-                "reel_id":    meta.get("reel_id", ""),
-                "recipe_name": meta.get("recipe_name", ""),
-                "author":     meta.get("author", ""),
-                "url":        meta.get("url", ""),
-                "chunk_type": meta.get("chunk_type", ""),
-                "timestamp":  meta.get("timestamp", ""),
-                "date":       meta.get("date", ""),
-                "score":      round(float(r["score"]), 3) if r["score"] is not None else 0.0,
+                "text":         r["document"],
+                "reel_id":      meta.get("reel_id", ""),
+                "recipe_name":  meta.get("recipe_name", ""),
+                "author":       meta.get("author", ""),
+                "url":          meta.get("url", ""),
+                "chunk_type":   meta.get("chunk_type", ""),
+                "content_type": meta.get("content_type", ""),
+                "timestamp":    meta.get("timestamp", ""),
+                "date":         meta.get("date", ""),
+                "score":        round(float(r["score"]), 3) if r["score"] is not None else 0.0,
             })
         return chunks
 
@@ -339,17 +351,21 @@ def retrieve(collection_name: str, query: str, k: int = 5, chunk_type: str | Non
             WHERE collection = %s
         """
         params = [query_emb, collection_name]
-        
+
         if chunk_type:
             query_sql += " AND metadata->>'chunk_type' = %s"
             params.append(chunk_type)
-            
+
+        if content_type:
+            query_sql += " AND metadata->>'content_type' = %s"
+            params.append(content_type)
+
         query_sql += """
             ORDER BY embedding <=> %s::vector
             LIMIT %s;
         """
         params.extend([query_emb, k])
-        
+
         cur.execute(query_sql, params)
         results = cur.fetchall()
     conn.close()
@@ -358,15 +374,16 @@ def retrieve(collection_name: str, query: str, k: int = 5, chunk_type: str | Non
     for r in results:
         meta = r["metadata"]
         chunks.append({
-            "text":       r["document"],
-            "reel_id":    meta.get("reel_id", ""),
-            "recipe_name": meta.get("recipe_name", ""),
-            "author":     meta.get("author", ""),
-            "url":        meta.get("url", ""),
-            "chunk_type": meta.get("chunk_type", ""),
-            "timestamp":  meta.get("timestamp", ""),
-            "date":       meta.get("date", ""),
-            "score":      round(float(r["score"]), 3) if r["score"] is not None else 0.0,
+            "text":         r["document"],
+            "reel_id":      meta.get("reel_id", ""),
+            "recipe_name":  meta.get("recipe_name", ""),
+            "author":       meta.get("author", ""),
+            "url":          meta.get("url", ""),
+            "chunk_type":   meta.get("chunk_type", ""),
+            "content_type": meta.get("content_type", ""),
+            "timestamp":    meta.get("timestamp", ""),
+            "date":         meta.get("date", ""),
+            "score":        round(float(r["score"]), 3) if r["score"] is not None else 0.0,
         })
     return chunks
 

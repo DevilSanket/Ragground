@@ -1,22 +1,24 @@
 ---
 reel_id: "DKZt5bzzuIr"
-recipe_name: "Chocolate Miso Butter"
 url: "https://www.instagram.com/reel/DKZt5bzzuIr/"
 author: "@Ground Up"
 date: "2025-06-02"
 likes: 235
 duration_seconds: 56
-difficulty: "easy"
-ground_up_products: [Black Bean Miso]
-classification_confidence: "high"
 content_type: recipe
+confidence: "high"
+ground_up_products: [black bean miso]
+topics: [baking, spreads, dessert, miso, chocolate, easy recipes, comfort food]
+recipe_name: "Chocolate Miso Butter"
+meal_type: "snack"
+difficulty: "easy"
 ---
 
 # Chocolate Miso Butter
 
-_A quick and simple savory-sweet chocolate spread with a fruity, unexpected twist from black bean miso, perfect for cozy weather._
+_A quick and simple recipe for a sweet and savory chocolate spread, enhanced with the unique umami flavor of black bean miso._
 
-📊 Easy
+🕐 Snack  |  📊 Easy
 
 ## Source
 
@@ -25,21 +27,25 @@ _A quick and simple savory-sweet chocolate spread with a fruity, unexpected twis
 
 ## Ingredients
 
-- Unsalted butter
-- Cocoa powder
-- Caster sugar
-- Black bean miso
+- unsalted butter
+- cocoa powder
+- caster sugar
+- black bean miso
 
 ## Ground Up Products Used
 
-- **Black Bean Miso** — [shop via link in bio](https://www.instagram.com/reel/DKZt5bzzuIr/)
+- **black bean miso** — [shop via link in bio](https://www.instagram.com/reel/DKZt5bzzuIr/)
 
 ## Instructions
 
-1. Whisk softened, room-temperature unsalted butter until it's nice and fluffy.
-2. Add caster sugar and continue whisking until it dissolves.
-3. Sift in cocoa powder and whisk until it all comes together.
-4. Fold in the black bean miso.
+1. Whisk softened unsalted butter until fluffy.
+2. Add caster sugar and whisk until dissolved.
+3. Sift in cocoa powder and whisk until combined.
+4. Fold in black bean miso.
+
+## Summary
+
+This reel provides a quick and simple recipe for a chocolate miso butter spread. It combines softened butter, caster sugar, cocoa powder, and Ground Up's black bean miso to create a unique sweet and savory flavor. The recipe is presented as an easy option for a comforting treat, especially during rainy weather.
 
 ## Original Transcript
 
